@@ -1,0 +1,38 @@
+name: SonarQube
+on:
+  push:
+    branches:
+      - master # or the name of your main branch
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Download and install the build wrapper, build the project
+        run: |
+          mkdir $HOME/.sonar
+          curl -sSLo $HOME/.sonar/build-wrapper-linux-x86.zip ${SONAR_HOST_URL}/static/cpp/build-wrapper-linux-x86.zip
+          unzip -o $HOME/.sonar/build-wrapper-linux-x86.zip -d $HOME/.sonar/
+          $HOME/.sonar/build-wrapper-linux-x86/build-wrapper-linux-x86-64 --out-dir bw-output ./build.sh
+        env:
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+
+      - name: Verify build wrapper output
+        run: |
+          ls -lh bw-output
+          cat bw-output/build-wrapper-dump.json
+
+      - name: SonarQube analysis
+        uses: SonarSource/sonarqube-scan-action@v1.0.0
+        with:
+          args: -Dsonar.cfamily.build-wrapper-output=bw-output
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
