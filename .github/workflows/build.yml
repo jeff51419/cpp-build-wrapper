@@ -31,7 +31,7 @@ jobs:
         run: |
           ls -lh bw-output
           cat bw-output/build-wrapper-dump.json
-          cat build-wrapper.log
+          cat bw-output/build-wrapper.log
 
       - 
         name: SonarQube analysis
