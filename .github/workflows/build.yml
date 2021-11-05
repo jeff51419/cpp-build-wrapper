@@ -38,7 +38,6 @@ jobs:
         uses: SonarSource/sonarqube-scan-action@v1.0.0
         with:
           args: -Dsonar.cfamily.build-wrapper-output=bw-output
-          projectBaseDir: src
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
