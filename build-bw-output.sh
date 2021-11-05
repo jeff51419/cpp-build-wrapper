@@ -1,6 +1,6 @@
 #!/bin/bash
-echo "REMOVE PREVIOUS BUILD"
-rm -rf bw-output
+# echo "REMOVE PREVIOUS BUILD"
+# rm -rf bw-output
 
 echo "BUILDING"
 mkdir bw-output
