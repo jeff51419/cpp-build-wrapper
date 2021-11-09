@@ -43,7 +43,7 @@ jobs:
           unzip -o $HOME/.sonar/sonar-scanner-cli-4.6.2.2472-linux.zip -d $HOME/.sonar/
           echo "sonar.host.url=${SONAR_HOST_URL}" >> $HOME/.sonar/sonar-scanner-4.6.2.2472-linux/conf/sonar-scanner.properties
           $HOME/.sonar/sonar-scanner-4.6.2.2472-linux/bin/sonar-scanner -h
-          sonar-scanner -Dsonar.login=${SONAR_TOKEN}
+          $HOME/.sonar/sonar-scanner-4.6.2.2472-linux/bin/sonar-scanner -Dsonar.login=${SONAR_TOKEN}
         env:
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
