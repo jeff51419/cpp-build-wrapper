@@ -20,21 +20,21 @@ jobs:
         name: create .sonar folder
         run:  mkdir $HOME/.sonar
 
-      # - 
-      #   name: Download and install the build wrapper, build the project
-      #   run: |
-      #     curl -sSLo $HOME/.sonar/build-wrapper-linux-x86.zip ${SONAR_HOST_URL}/static/cpp/build-wrapper-linux-x86.zip
-      #     unzip -o $HOME/.sonar/build-wrapper-linux-x86.zip -d $HOME/.sonar/
-      #     $HOME/.sonar/build-wrapper-linux-x86/build-wrapper-linux-x86-64 --out-dir bw-output ./build.sh
-      #   env:
-      #     SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+      - 
+        name: Download and install the build wrapper, build the project
+        run: |
+          curl -sSLo $HOME/.sonar/build-wrapper-linux-x86.zip ${SONAR_HOST_URL}/static/cpp/build-wrapper-linux-x86.zip
+          unzip -o $HOME/.sonar/build-wrapper-linux-x86.zip -d $HOME/.sonar/
+          $HOME/.sonar/build-wrapper-linux-x86/build-wrapper-linux-x86-64 --out-dir bw-output ./build.sh
+        env:
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
 
-      # - 
-      #   name: Verify build wrapper output
-      #   run: |
-      #     ls -lh bw-output
-      #     cat bw-output/build-wrapper-dump.json
-      #     cat bw-output/build-wrapper.log
+      - 
+        name: Verify build wrapper output
+        run: |
+          ls -lh bw-output
+          cat bw-output/build-wrapper-dump.json
+          cat bw-output/build-wrapper.log
 
       - 
         name: Download and install the SonarScanner, scan the project
