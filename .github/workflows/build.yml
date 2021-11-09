@@ -41,7 +41,7 @@ jobs:
         run: |
           curl -sSLo $HOME/.sonar/sonar-scanner-cli-4.6.2.2472-linux.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.6.2.2472-linux.zip
           unzip -o $HOME/.sonar/sonar-scanner-cli-4.6.2.2472-linux.zip -d $HOME/.sonar/
-          ls -l $HOME/.sonar/sonar-scanner-4.6.2.2472-linux
-        # echo "sonar.host.url=${SONAR_HOST_URL}" >> $HOME/.sonar/sonar-scanner-4.6.2.2472-linux/conf
-        # sonar-scanner -h
+          echo "sonar.host.url=${SONAR_HOST_URL}" >> $HOME/.sonar/sonar-scanner-4.6.2.2472-linux/conf
+          cat $HOME/.sonar/sonar-scanner-4.6.2.2472-linux/conf
+          $HOME/.sonar/sonar-scanner-4.6.2.2472-linux/bin/sonar-scanner -h
         # sonar-scanner -Dsonar.login=myAuthenticationToken
