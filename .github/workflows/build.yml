@@ -25,8 +25,8 @@ jobs:
           unzip -o $HOME/.sonar/build-wrapper-linux-x86.zip -d $HOME/.sonar/
           $HOME/.sonar/build-wrapper-linux-x86/build-wrapper-linux-x86-64 --out-dir bw-output ./build.sh
         env:
-          # SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-          SONAR_HOST_URL: "https://sonarqube.cicd.splashtop.com"
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+          # SONAR_HOST_URL: "https://sonarqube.cicd.splashtop.com"
 
       - 
         name: Verify build wrapper output
