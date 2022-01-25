@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - master # or the name of your main branch
+      - SornaQube
   pull_request:
     types: [opened, synchronize, reopened]
 
@@ -17,17 +18,15 @@ jobs:
           fetch-depth: 0
 
       - 
-        name: create .sonar folder
-        run:  mkdir $HOME/.sonar
-
-      - 
         name: Download and install the build wrapper, build the project
         run: |
-          curl -sSLo $HOME/.sonar/build-wrapper-linux-x86.zip ${SONAR_HOST_URL}/static/cpp/build-wrapper-linux-x86.zip
+          mkdir $HOME/.sonar
+          curl -sSLo $HOME/.sonar/build-wrapper-linux-x86.zip ${{ env.SONAR_HOST_URL }}/static/cpp/build-wrapper-linux-x86.zip
           unzip -o $HOME/.sonar/build-wrapper-linux-x86.zip -d $HOME/.sonar/
           $HOME/.sonar/build-wrapper-linux-x86/build-wrapper-linux-x86-64 --out-dir bw-output ./build.sh
         env:
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+          # SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+          SONAR_HOST_URL: "https://sonarqube.cicd.splashtop.com"
 
       - 
         name: Verify build wrapper output
@@ -36,14 +35,32 @@ jobs:
           cat bw-output/build-wrapper-dump.json
           cat bw-output/build-wrapper.log
 
+      # - 
+      #   name: Download and install the SonarScanner, scan the project
+      #   run: |
+      #     curl -sSLo $HOME/.sonar/sonar-scanner-cli-${{ env.SONAR_SCANNER_VERSION }}-linux.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.6.2.2472-linux.zip
+      #     unzip -o $HOME/.sonar/sonar-scanner-cli-${{ env.SONAR_SCANNER_VERSION }}-linux.zip -d $HOME/.sonar/
+      #     echo "sonar.host.url=${SONAR_HOST_URL}" >> $HOME/.sonar/sonar-scanner-${{ env.SONAR_SCANNER_VERSION }}-linux/conf/sonar-scanner.properties
+      #     $HOME/.sonar/sonar-scanner-${{ env.SONAR_SCANNER_VERSION }}-linux/bin/sonar-scanner -h
+      #     $HOME/.sonar/sonar-scanner-${{ env.SONAR_SCANNER_VERSION }}-linux/bin/sonar-scanner -Dsonar.login=${SONAR_TOKEN}
+      #   env:
+      #     SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+      #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      #     SONAR_SCANNER_VERSION: 4.6.2.2472
+
       - 
-        name: Download and install the SonarScanner, scan the project
-        run: |
-          curl -sSLo $HOME/.sonar/sonar-scanner-cli-4.6.2.2472-linux.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.6.2.2472-linux.zip
-          unzip -o $HOME/.sonar/sonar-scanner-cli-4.6.2.2472-linux.zip -d $HOME/.sonar/
-          echo "sonar.host.url=${SONAR_HOST_URL}" >> $HOME/.sonar/sonar-scanner-4.6.2.2472-linux/conf/sonar-scanner.properties
-          $HOME/.sonar/sonar-scanner-4.6.2.2472-linux/bin/sonar-scanner -h
-          $HOME/.sonar/sonar-scanner-4.6.2.2472-linux/bin/sonar-scanner -Dsonar.login=${SONAR_TOKEN}
+        name: Download and install the SonarScanner
         env:
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+          SONAR_SCANNER_VERSION: 4.6.2.2472
+        run: |
+          curl -sSLo $HOME/.sonar/sonar-scanner.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-${{ env.SONAR_SCANNER_VERSION }}-linux.zip
+          unzip -o $HOME/.sonar/sonar-scanner.zip -d $HOME/.sonar/
+          echo "$HOME/.sonar/sonar-scanner-${{ env.SONAR_SCANNER_VERSION }}-linux/bin" >> $GITHUB_PATH
+
+      - 
+        name: SonarQube analysis
+        run: |
+          sonar-scanner --define sonar.cfamily.build-wrapper-output=bw-output  
+        env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
