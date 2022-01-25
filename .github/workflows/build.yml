@@ -24,7 +24,7 @@ jobs:
       - 
         name: Download and install the build wrapper, build the project
         run: |
-          curl -sSLo $HOME/.sonar/build-wrapper-linux-x86.zip ${SONAR_HOST_URL}/static/cpp/build-wrapper-linux-x86.zip
+          curl -sSLo $HOME/.sonar/build-wrapper-linux-x86.zip ${{ env.SONAR_HOST_URL }}/static/cpp/build-wrapper-linux-x86.zip
           unzip -o $HOME/.sonar/build-wrapper-linux-x86.zip -d $HOME/.sonar/
           $HOME/.sonar/build-wrapper-linux-x86/build-wrapper-linux-x86-64 --out-dir bw-output ./build.sh
         env:
